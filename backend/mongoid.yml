@@ -1,0 +1,7 @@
+clients:
+  default:
+    uri: "mongodb+srv://burguerCommerce:6J11YgZECOMMERCEXJyM8h2Jk@e-commercelp.zqtqsqo.mongodb.net/?retryWrites=true&w=majority"
+    # options:
+    #   server_api:
+    #     version: "1"
+    # database: burguerEcommerce

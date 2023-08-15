@@ -1,0 +1,14 @@
+{
+    "name": "Backend with sinatra and mongo",
+    "image": "ruby:2.7",
+    "forwardPorts": [4567],
+    "postCreateCommand": "gem install sinatra sinatra-contrib mongoid",
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "rebornix.ruby"
+        ]
+      }
+    }
+  }
+  
