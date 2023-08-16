@@ -10,6 +10,8 @@ GEM
       tzinfo (~> 2.0)
     bson (4.15.0)
     concurrent-ruby (1.2.2)
+    faker (3.2.1)
+      i18n (>= 1.8.11, < 2)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     minitest (5.19.0)
@@ -39,6 +41,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  faker
   mongoid
   sinatra
 
