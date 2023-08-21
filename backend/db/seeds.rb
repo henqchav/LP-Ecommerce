@@ -5,6 +5,7 @@ require_relative '../mongoid_loader'
 require_relative '../models/product'
 require_relative '../models/order'
 require_relative '../models/user'
+require_relative '../models/productinv'
 
 Mongoid.load!('mongoid.yml', :development)
 
@@ -29,7 +30,6 @@ end
   product = Product.create(
     name: Faker::Commerce.product_name,
     description: Faker::Marketing.buzzwords,
-    quantity: Faker::Number.between(from: 1, to: 100),
     image: Faker::Placeholdit.image,
     price: Faker::Commerce.price(range: 0..100.0)
   )
@@ -39,5 +39,19 @@ end
     quantity: Faker::Number.between(from: 1, to: 10),
     buyer_id: BSON::ObjectId.new,
     status: ['pending', 'processing', 'complete'].sample
+  )
+end
+
+1.times do
+  product = Product.create(
+    name: Faker::Commerce.product_name,
+    description: Faker::Marketing.buzzwords,
+    image: Faker::Placeholdit.image,
+    price: Faker::Commerce.price(range: 0..100.0)
+  )
+
+  ProductInv.create(
+    product_id: product._id,
+    quantity: Faker::Number.between(from: 1, to: 100),
   )
 end

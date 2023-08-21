@@ -4,6 +4,7 @@ require_relative 'mongoid_loader'
 require_relative 'models/product'
 require_relative 'models/order'
 require_relative 'models/user'
+require_relative 'models/productinv'
 
 
 get '/products' do
@@ -32,6 +33,54 @@ delete '/products/:id' do
   product = Product.find(params[:id])
   if product
     if product.destroy
+      status 204
+    else
+      status 500
+    end
+  else
+    status 404
+  end
+end
+
+get '/product_inventory' do
+  ProductInv.all.to_json
+end
+
+get '/product_inventory/:id' do
+  productInv = ProductInv.find(params[:id])
+  if productInv
+    productInv.to_json
+  else
+    status 404
+  end
+end
+
+post '/product_inventory' do
+  productInv = ProductInv.new(params)
+  if productInv.save
+    status 201
+  else
+    status 500
+  end
+end
+
+put '/product_inventory/:id' do
+  productInv = ProductInv.find(params[:id])
+  if productInv
+    if productInv.update(params)
+      status 200
+    else
+      status 500
+    end
+  else
+    status 404
+  end
+end
+
+delete '/product_inventory/:id' do
+  productInv = ProductInv.find(params[:id])
+  if productInv
+    if productInv.destroy
       status 204
     else
       status 500
