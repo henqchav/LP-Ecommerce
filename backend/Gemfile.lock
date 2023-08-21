@@ -37,8 +37,10 @@ GEM
     tilt (2.2.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    webrick (1.8.1)
 
 PLATFORMS
+  x64-mingw-ucrt
   x86_64-linux
 
 DEPENDENCIES
@@ -46,6 +48,7 @@ DEPENDENCIES
   faker
   mongoid
   sinatra
+  webrick
 
 BUNDLED WITH
    2.4.10
