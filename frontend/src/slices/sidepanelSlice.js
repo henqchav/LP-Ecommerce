@@ -3,20 +3,20 @@ import { createSlice } from "@reduxjs/toolkit";
 const sidepanelSlice = createSlice({
   name: "sidepanel",
   initialState: {
-    content: null,
+    panel: null,
     open: false,
   },
   reducers: {
     openSidepanel: (state, action) => {
       state.open = true;
       if (action.payload) {
-        state.content = action.payload;
+        state.panel = action.payload;
       }
     },
     closeSidepanel: (state, action) => {
       state.open = false;
       if (action.payload?.clear) {
-        state.content = null;
+        state.panel = null;
       }
     },
   },
