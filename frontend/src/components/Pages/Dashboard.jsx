@@ -1,6 +1,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import {Tabs, Tab , Typography, Box} from '@mui/material';
+import InventoryTabPanel from '../InventoryTabPanel';
+import OrdersTabPanel from '../OrdersTabPanel';
+import ProductsTabPanel from '../ProductsTabPanel';
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -51,15 +54,9 @@ const Dashboard = () => {
                     <Tab label="Inventario" {...a11yProps(2)} />
                 </Tabs>
             </Box>
-            <CustomTabPanel value={value} index={0} sx={{color: '#ffebee'}}>
-                Item One
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
-                Item Two
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
-                Item Three
-            </CustomTabPanel>
+            <InventoryTabPanel value={value} index={0} />
+            <OrdersTabPanel value={value} index={1} />
+            <ProductsTabPanel value={value} index={2} />
         </Box>
     );
 };
