@@ -8,6 +8,7 @@ import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import { closeSidepanel, openSidepanel } from "../../slices/sidepanelSlice";
+import { panelIcons, panelTitles, registry } from "../panel/panelRegistry";
 
 const drawerWidth = 400;
 
@@ -43,10 +44,26 @@ const DrawerContent = styled("div")(({ theme }) => ({
   padding: theme.spacing(1),
 }));
 
+const DefaultPanel = () => {
+  return <h2>No Content</h2>
+}
+
+const getPanelInfo = (id) => {
+  const PanelView = registry?.[id] ?? DefaultPanel;
+  const panelIcon = panelIcons?.[id];
+  const panelTitle = panelTitles?.[id];
+  return { PanelView, panelIcon, panelTitle };
+};
+
 const SidePanelLayout = ({ render }) => {
   const dispatch = useDispatch();
-  const sidepanel = useSelector(({ sidepanel }) => sidepanel.content);
+  const panel = useSelector(({ sidepanel }) => sidepanel.panel);
   const open = useSelector(({ sidepanel }) => sidepanel.open);
+
+  const panelId = panel?.id;
+  const panelProps = panel?.props ?? {};
+
+  const { PanelView, panelIcon, panelTitle } = getPanelInfo(panelId);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -71,14 +88,21 @@ const SidePanelLayout = ({ render }) => {
       >
         <Toolbar />
         <DrawerHeader>
-          <Typography>Titulo</Typography>
+          <div className="flex gap-x-3">
+            {panelIcon && <Icon>{panelIcon}</Icon>}
+            <Typography fontWeight={700}>
+              {panelTitle ? panelTitle : "Undefined title"}
+            </Typography>
+          </div>
           <Box flexGrow={1} />
-          <IconButton onClick={() => dispatch(closeSidepanel({ clear: true }))}>
+          <IconButton onClick={() => dispatch(closeSidepanel())}>
             <Icon>close</Icon>
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <DrawerContent>Contenido</DrawerContent>
+        <DrawerContent>
+          <PanelView {...panelProps} />
+        </DrawerContent>
       </Drawer>
     </Box>
   );
