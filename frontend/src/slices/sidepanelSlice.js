@@ -5,6 +5,7 @@ const sidepanelSlice = createSlice({
   initialState: {
     panel: null,
     open: false,
+    selectedProduct: null,
   },
   reducers: {
     openSidepanel: (state, action) => {
@@ -19,9 +20,12 @@ const sidepanelSlice = createSlice({
         state.panel = null;
       }
     },
+    setSelectedProduct: (state, action) => {
+      state.selectedProduct = action.payload;
+    },
   },
 });
 
 export const sidepanelReducer = sidepanelSlice.reducer;
-export const { openSidepanel, closeSidepanel } = sidepanelSlice.actions;
+export const { openSidepanel, closeSidepanel, setSelectedProduct  } = sidepanelSlice.actions;
 export default sidepanelSlice;

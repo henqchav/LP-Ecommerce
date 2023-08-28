@@ -54,9 +54,10 @@ const Dashboard = () => {
                     <Tab label="Inventario" {...a11yProps(2)} />
                 </Tabs>
             </Box>
-            <InventoryTabPanel value={value} index={0} />
+            <ProductsTabPanel value={value} index={0} />
             <OrdersTabPanel value={value} index={1} />
-            <ProductsTabPanel value={value} index={2} />
+            <InventoryTabPanel value={value} index={2} />
+            
         </Box>
     );
 };
