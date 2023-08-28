@@ -1,21 +1,26 @@
 import {
   AppBar,
+  Badge,
   Button,
   Icon,
   IconButton,
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { openSidepanel } from "../slices/sidepanelSlice";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 
 const AppNavBar = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const orderItems = useSelector(({ cart }) => cart.items);
 
   return (
-    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <AppBar
+      position="fixed"
+      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    >
       <Toolbar>
         <Typography
           style={{ fontFamily: "Kaushan Script, cursive" }}
@@ -25,12 +30,14 @@ const AppNavBar = () => {
         >
           Hamburguesas de la 9 de Octubre
         </Typography>
-        {location.pathname === '/catalogo' && (
+        {location.pathname === "/catalogo" && (
           <IconButton
             className="mr-6"
             onClick={() => dispatch(openSidepanel({ id: "SHOPPING_CART" }))}
           >
-            <Icon>shopping_cart</Icon>
+            <Badge color="secondary" badgeContent={orderItems.length}>
+              <Icon>shopping_cart</Icon>
+            </Badge>
           </IconButton>
         )}
         <Button color="inherit">Login</Button>

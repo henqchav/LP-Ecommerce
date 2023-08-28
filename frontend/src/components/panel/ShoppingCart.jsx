@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 
-import { Box, Chip, Divider, Typography } from "@mui/material";
+import { Box, Chip, Divider, Icon, IconButton, Typography } from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
-import { clearCart } from "../../slices/cartSlice";
+import { clearCart, deleteItemFromCart } from "../../slices/cartSlice";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const CartItem = (props) => {
   const id = props.id;
@@ -11,19 +12,26 @@ const CartItem = (props) => {
   const quantity = props.quantity;
   const price = props.price;
   const image = props.image;
+
+  const dispatch = useDispatch()
   return (
     <>
-      <div className="flex gap-x-1 px-2 py-3">
-        <img
-          src={image}
-          alt={name}
-          width={70}
-          height={70}
-          style={{
-            borderRadius: "5%",
-            border: "2px solid rgba(0, 0, 0, 0.4)",
-          }}
-        />
+      <div className="flex gap-x-1 px-2 py-4">
+        <div className="relative inline-block">
+          <img
+            src={image}
+            alt={name}
+            width={70}
+            height={70}
+            style={{
+              borderRadius: "5%",
+              border: "2px solid rgba(0, 0, 0, 0.4)",
+            }}
+          />
+          <IconButton onClick={() => dispatch(deleteItemFromCart(id))} size="small" color="error" className="absolute -top-5 -right-5">
+            <Icon>remove_circle</Icon>
+          </IconButton>
+        </div>
         <div className="ml-2 flex flex-col">
           <Typography fontWeight={700}>{`${quantity} x ${name}`}</Typography>
           <Typography color={"primary"} fontWeight={700}>{`$${
@@ -42,6 +50,7 @@ const ShoppingCart = () => {
   const [subtotal, setSubtotal] = useState(0);
 
   const dispatch = useDispatch();
+  const [animateRef] = useAutoAnimate();
 
   useEffect(() => {
     const newSubtotal = orderItems.reduce((acc, curr) => {
@@ -53,7 +62,7 @@ const ShoppingCart = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col">
+      <div className="flex flex-col" ref={animateRef}>
         {orderItems.length ? (
           orderItems.map((item) => (
             <CartItem

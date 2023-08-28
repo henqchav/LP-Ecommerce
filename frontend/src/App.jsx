@@ -36,15 +36,29 @@ const theme = createTheme({
         container: () => document.getElementById("root"),
       },
     },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          background: "#D9D9D9",
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        select: {
+          background: "#D9D9D9",
+        },
+      },
+    },
   },
   palette: {
     mode: "light",
     primary: {
-      main: "#A1491B"
+      main: "#A1491B",
     },
     secondary: {
-      main: "#6C6969"
-    }
+      main: "#6C6969",
+    },
   },
 });
 

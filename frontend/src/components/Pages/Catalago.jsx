@@ -1,4 +1,4 @@
-import { Chip, Paper, Typography } from "@mui/material";
+import { Box, Chip, Link, Paper, Typography } from "@mui/material";
 import imgHamburguesa from "../../assets/hamburguesa.png?url";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -79,7 +79,7 @@ const HamburguesaCard = (props) => {
   const price = props.price;
   const quantity = props.quantity;
 
-  const [isOutOfStock, setIsOutOfStock] = useState(false)
+  const [isOutOfStock, setIsOutOfStock] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -88,12 +88,12 @@ const HamburguesaCard = (props) => {
   );
 
   useEffect(() => {
-    if(itemInCart) {
-      setIsOutOfStock(itemInCart.quantity === quantity)
+    if (itemInCart) {
+      setIsOutOfStock(itemInCart.quantity === quantity);
     } else {
-      setIsOutOfStock(false)
+      setIsOutOfStock(false);
     }
-  }, [itemInCart])
+  }, [itemInCart]);
 
   return (
     <Paper
@@ -111,12 +111,28 @@ const HamburguesaCard = (props) => {
           border: "2px solid rgba(0, 0, 0, 0.4)",
         }}
       />
-      <Typography fontFamily={"Kaushan Script, cursive"}>{name}</Typography>
+      <Link
+        onClick={() => {}}
+        component={Box}
+        underline="none"
+        className="cursor-pointer"
+        sx={{
+          color: "black",
+          "&:hover": {
+            color: "primary.main",
+            transform: "scale(1.05)",
+          },
+          transition: "color 0.3s, transform 0.3s",
+        }}
+        fontFamily={"Kaushan Script, cursive"}
+      >
+        {name}
+      </Link>
       <Typography color={"primary"} fontWeight={700}>{`$${price}`}</Typography>
       <Chip
         disabled={!quantity || isOutOfStock}
         color="primary"
-        label={!quantity || isOutOfStock  ? "Agotado" : "Agregar al carrito"}
+        label={!quantity || isOutOfStock ? "Agotado" : "Agregar al carrito"}
         sx={{ fontWeight: 500 }}
         onClick={() =>
           dispatch(

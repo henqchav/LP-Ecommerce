@@ -1,4 +1,3 @@
-import { useState } from "react";
 
 import { Icon, Toolbar, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -7,7 +6,7 @@ import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import { closeSidepanel, openSidepanel } from "../../slices/sidepanelSlice";
+import { closeSidepanel } from "../../slices/sidepanelSlice";
 import { panelIcons, panelTitles, registry } from "../panel/panelRegistry";
 
 const drawerWidth = 400;
@@ -45,8 +44,8 @@ const DrawerContent = styled("div")(({ theme }) => ({
 }));
 
 const DefaultPanel = () => {
-  return <h2>No Content</h2>
-}
+  return <h2>No Content</h2>;
+};
 
 const getPanelInfo = (id) => {
   const PanelView = registry?.[id] ?? DefaultPanel;
