@@ -2,10 +2,11 @@ import { Routes, Navigate, Route, Outlet } from "react-router-dom";
 
 // Pages
 import Catalogo from "./Pages/Catalago";
+import SidePanelLayout from "./Navigation/SidePanelLayout";
 import Dashboard from "./Pages/Dashboard";
 import Login from "./Pages/Login";
 import AppNavBar from "./AppNavBar";
-import SidePanelLayout from "./Navigation/SidePanelLayout"
+import Producto from "./Pages/Producto";
 
 const AppRouter = () => {
   return (
@@ -19,6 +20,7 @@ const AppRouter = () => {
         }
       >
         <Route path="/catalogo" element={<Catalogo />} />
+        <Route path="/producto" element={<Producto />} />
       </Route>
       
       <Route

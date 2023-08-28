@@ -4,6 +4,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart } from "../../slices/cartSlice";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const productos = [
   {
@@ -82,6 +83,7 @@ const HamburguesaCard = (props) => {
   const [isOutOfStock, setIsOutOfStock] = useState(false);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const itemInCart = useSelector(({ cart }) => cart.items).find(
     (item) => item.id === id
@@ -94,6 +96,10 @@ const HamburguesaCard = (props) => {
       setIsOutOfStock(false);
     }
   }, [itemInCart]);
+
+  const handleProductClick = () => {
+    navigate(`/producto?id=${id}`)
+  }
 
   return (
     <Paper
@@ -112,7 +118,7 @@ const HamburguesaCard = (props) => {
         }}
       />
       <Link
-        onClick={() => {}}
+        onClick={() => handleProductClick()}
         component={Box}
         underline="none"
         className="cursor-pointer"
