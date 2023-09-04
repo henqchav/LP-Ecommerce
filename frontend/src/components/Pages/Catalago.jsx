@@ -1,12 +1,20 @@
-import { Box, Chip, Link, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Link,
+  Paper,
+  Typography,
+} from "@mui/material";
 import imgHamburguesa from "../../assets/hamburguesa.png?url";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useDispatch, useSelector } from "react-redux";
 import { addItemToCart } from "../../slices/cartSlice";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useProductsInv from "../../utils/hooks/useProductsInv";
 
-const productos = [
+const productosMock = [
   {
     id: 1,
     name: "Sencilla",
@@ -98,8 +106,8 @@ const HamburguesaCard = (props) => {
   }, [itemInCart]);
 
   const handleProductClick = () => {
-    navigate(`/producto?id=${id}`)
-  }
+    navigate(`/producto?id=${id}`);
+  };
 
   return (
     <Paper
@@ -121,7 +129,7 @@ const HamburguesaCard = (props) => {
         onClick={() => handleProductClick()}
         component={Box}
         underline="none"
-        className="cursor-pointer"
+        className="cursor-pointer text-center"
         sx={{
           color: "black",
           "&:hover": {
@@ -153,20 +161,41 @@ const HamburguesaCard = (props) => {
 
 const Catalogo = () => {
   const [animateRef] = useAutoAnimate();
+  const { productsInv: productos, loading } = useProductsInv();
+
+  if (loading) {
+    return (
+      <div className="w-full flex justify-center py-56">
+        <CircularProgress size="4rem" />
+      </div>
+    );
+  }
 
   return (
     <div ref={animateRef} className="flex p-2 gap-14 flex-wrap">
-      {productos.map((prd) => (
-        <HamburguesaCard
-          key={prd.id}
-          id={prd.id}
-          name={prd.name}
-          description={prd.description}
-          image={prd.image}
-          price={prd.price}
-          quantity={prd.quantity}
-        />
-      ))}
+      {productos.length ? (
+        productos.map((prd) => (
+          <HamburguesaCard
+            key={prd.id}
+            id={prd.id}
+            name={prd.name}
+            description={prd.description}
+            image={prd.image}
+            price={prd.price}
+            quantity={prd.quantity}
+          />
+        ))
+      ) : (
+        <div className="w-full flex justify-center py-56">
+          <Typography
+            variant="h4"
+            fontWeight={700}
+            fontFamily={"Kaushan Script, cursive"}
+          >
+            No hay productos disponibles
+          </Typography>
+        </div>
+      )}
     </div>
   );
 };

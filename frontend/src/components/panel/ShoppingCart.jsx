@@ -35,7 +35,7 @@ const CartItem = (props) => {
         <div className="ml-2 flex flex-col">
           <Typography fontWeight={700}>{`${quantity} x ${name}`}</Typography>
           <Typography color={"primary"} fontWeight={700}>{`$${
-            +price * +quantity
+            (+price * +quantity).toFixed(2)
           }`}</Typography>
         </div>
         <Box flexGrow={1} />
@@ -84,7 +84,7 @@ const ShoppingCart = () => {
       <div className="flex justify-between py-2 px-3">
         <Typography fontWeight={100}>SUB-TOTAL</Typography>
         <Box flexGrow={1} />
-        <Typography fontWeight={700}>{`$${subtotal}`}</Typography>
+        <Typography fontWeight={700}>{`$${subtotal.toFixed(2)}`}</Typography>
       </div>
       <Divider />
       <div className="flex flex-col items-center pt-8 pb-4 gap-y-2">

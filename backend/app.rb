@@ -1,11 +1,19 @@
 # app.rb
 require 'sinatra'
+require 'rack/cors'
 require_relative 'mongoid_loader'
 require_relative 'models/product'
 require_relative 'models/order'
 require_relative 'models/user'
 require_relative 'models/productinv'
 
+# Enable CORS for all routes
+use Rack::Cors do
+  allow do
+    origins '*'
+    resource '*', headers: :any, methods: [:get, :post, :options]
+  end
+end
 
 get '/products' do
   Product.all.to_json
@@ -43,13 +51,45 @@ delete '/products/:id' do
 end
 
 get '/product_inventory' do
-  ProductInv.all.to_json
+  product_inventories = ProductInv.all.map do |product_inv|
+    product = Product.find(product_inv.product_id)
+    {
+      id: product_inv._id.to_s,
+      product_id: product_inv.product_id.to_s,
+      quantity: product_inv.quantity,
+      name: product.name,
+      description: product.description,
+      image: product.image,
+      price: product.price,
+    }
+  end
+
+  content_type :json
+  product_inventories.to_json
 end
 
 get '/product_inventory/:id' do
-  productInv = ProductInv.find(params[:id])
-  if productInv
-    productInv.to_json
+  product_inv = ProductInv.find(params[:id])
+
+  if product_inv
+    product = Product.find(product_inv.product_id)
+
+    if product
+      result = {
+        id: product_inv._id.to_s,
+        product_id: product_inv.product_id.to_s,
+        quantity: product_inv.quantity,
+        name: product.name,
+        description: product.description,
+        image: product.image,
+        price: product.price,
+      }
+
+      content_type :json
+      result.to_json
+    else
+      status 404
+    end
   else
     status 404
   end
