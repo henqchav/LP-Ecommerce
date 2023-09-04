@@ -33,6 +33,14 @@ const AppNavBar = () => {
         {location.pathname === "/catalogo" && (
           <IconButton
             className="mr-6"
+            onClick={() => dispatch(openSidepanel({ id: "ORDER_STATUS" }))}
+          >
+            <Icon>track_changes</Icon>
+          </IconButton>
+        )}
+        {location.pathname === "/catalogo" && (
+          <IconButton
+            className="mr-6"
             onClick={() => dispatch(openSidepanel({ id: "SHOPPING_CART" }))}
           >
             <Badge color="secondary" badgeContent={orderItems.length}>

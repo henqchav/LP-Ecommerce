@@ -13,6 +13,7 @@ import {
   import imgHamburguesa from "../../assets/hamburguesa.png?url";
   import { useDispatch, useSelector } from "react-redux";
   import { addItemToCart } from "../../slices/cartSlice";
+  import { getProductInv } from "../../services/productInvService";
   
   const productos = [
     {
@@ -122,13 +123,14 @@ import {
     const [selectedQuantity, setSelectedQuantity] = useState(1);
     const [isOutOfStock, setIsOutOfStock] = useState(false);
   
-    const handleProductInfoRequest = (productId) => {
+    const handleProductInfoRequest = async (productId) => {
       try {
         // request logic
         if (!productId)
           throw new Error("No se ha proporcionado el id del producto");
   
-        const product = productos.find((item) => +item.id === +productId);
+        // const product = productos.find((item) => +item.id === +productId);
+        const product = await getProductInv(productId);
   
         if (!product) throw new Error("No se podido encontrar el producto");
   
@@ -202,7 +204,6 @@ import {
                   className="mb-3"
                   label="Agregar una nota"
                   multiline
-                  maxRows={4}
                   rows={4}
                 />
                 <Divider />

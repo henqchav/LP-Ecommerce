@@ -42,10 +42,13 @@ end
   )
 end
 
-1.times do
+10.times do
+  product_name = Faker::Food.dish
+  product_description = "Delicious hamburger with #{Faker::Food.ingredient}, #{Faker::Food.spice} and more."
+
   product = Product.create(
-    name: Faker::Commerce.product_name,
-    description: Faker::Marketing.buzzwords,
+    name: product_name,
+    description: product_description,
     image: Faker::Placeholdit.image,
     price: Faker::Commerce.price(range: 0..100.0)
   )
