@@ -19,3 +19,14 @@ export const deleteOrder = (orderId) => {
   return axios.delete(`/orders/${orderId}`)
     .then(response => response.status === 204);
 };
+
+export const cancelOrder = async (orderId) => {
+  try {
+    const response = await axios.put(`/orders/${orderId}`, {
+      status: 'cancelada', // Actualiza el estado a 'cancelada'
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

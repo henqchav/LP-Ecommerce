@@ -1,18 +1,36 @@
 import * as React from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton } from '@mui/material';
 import { Check, Clear } from '@mui/icons-material';
-import useOrders from '../utils/hooks/useOrders'; // Importa el hook personalizado
+import { getOrders, cancelOrder } from '../services/orderService'; 
+
 
 const OrdersTabPanel = ({ value, index }) => {
-  const orders = useOrders(); // Utiliza el hook personalizado para obtener las órdenes
+  const [orders, setOrders] = React.useState([]); 
 
-  // Datos quemados para mostrar una fila
-  const dummyOrder = {
-    _id: '1',
-    product_id: '123',
-    quantity: 2,
-    total_pedido: '$20',
+
+  const loadOrders = async () => {
+    try {
+      const response = await getOrders();
+      const pendingOrders = response.filter((order) => order.status === 'pendiente');
+      setOrders(pendingOrders); // Almacena las órdenes pendientes en el estado
+    } catch (error) {
+      console.error('Error al cargar las órdenes', error);
+    }
   };
+
+   const cancelOrderById = async (orderId) => {
+    try {
+      await cancelOrder(orderId); // Llama a la función cancelOrder para actualizar el estado
+      // Vuelve a cargar las órdenes después de la cancelación
+      loadOrders();
+    } catch (error) {
+      console.error('Error al cancelar la orden', error);
+    }
+  };
+
+   React.useEffect(() => {
+    loadOrders();
+  }, []);
 
   return (
     <div
@@ -27,29 +45,34 @@ const OrdersTabPanel = ({ value, index }) => {
             <Table>
               <TableHead>
                 <TableRow style={{ borderBottom: '3px solid #706E6E' }}>
-                  <TableCell>Orden ID</TableCell>
+                  <TableCell>ID de Orden</TableCell>
+                  <TableCell>Cliente</TableCell>
                   <TableCell>Productos</TableCell>
-                  <TableCell>Total Pedido</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* Fila con datos quemados */}
-                <TableRow key={dummyOrder._id} >
-                  <TableCell>{dummyOrder.product_id}</TableCell>
-                  <TableCell>{dummyOrder.quantity}</TableCell>
-                  <TableCell>{dummyOrder.total_pedido}</TableCell>
-                  <TableCell>
-                    <IconButton style={{ color: 'green' }}>
-                      <Check />
-                    </IconButton>
-                    <IconButton style={{ color: 'red' }}>
-                      <Clear />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-                {/* Renderiza las órdenes reales */}
-                
+                {orders.map((order) => (
+                  <TableRow key={order.order_code}>
+                    <TableCell>{order.order_code}</TableCell>
+                    <TableCell>{order.client_name}</TableCell>
+                    <TableCell>
+                      {order.product_data.map((product, index) => (
+                        <div key={index}>
+                          {product.product_name} (Cantidad: {product.quantity})
+                        </div>
+                      ))}
+                    </TableCell>
+                    <TableCell>
+                      <IconButton color="success">
+                        <Check />
+                      </IconButton>
+                      <IconButton color="error" onClick={() => cancelOrderById(order._id.$oid)}>
+                        <Clear />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </TableContainer>

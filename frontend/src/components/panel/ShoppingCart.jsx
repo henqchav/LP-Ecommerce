@@ -182,6 +182,7 @@ const ShoppingCart = () => {
       }));
       const orderData = {
         product_data: productData,
+        client_name: customerName.trim(),
         order_code: orderCode,
         status: "pendiente", // Estado por defecto
       };
