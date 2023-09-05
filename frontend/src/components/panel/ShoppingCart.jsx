@@ -1,7 +1,23 @@
 import { useEffect, useState } from "react";
 
-import { Box, Chip, Divider, Icon, IconButton, Typography } from "@mui/material";
-
+import {
+  Box,
+  Chip,
+  Divider,
+  Icon,
+  IconButton,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart, deleteItemFromCart } from "../../slices/cartSlice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
@@ -48,6 +64,15 @@ const CartItem = (props) => {
 const ShoppingCart = () => {
   const orderItems = useSelector(({ cart }) => cart.items);
   const [subtotal, setSubtotal] = useState(0);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("tarjeta");
+  const [customerName, setCustomerName] = useState("");
+  const [tip, setTip] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expirationDate, setExpirationDate] = useState("");
+  const [cvv, setCVV] = useState("");
+  const [confirmationMessage, setConfirmationMessage] = useState("");
+  const [formErrors, setFormErrors] = useState({}); // Para gestionar los errores
 
   const dispatch = useDispatch();
   const [animateRef] = useAutoAnimate();
@@ -59,6 +84,108 @@ const ShoppingCart = () => {
     }, 0);
     setSubtotal(newSubtotal);
   }, [orderItems]);
+
+  const calculateTotal = () => {
+    const shippingCost = 1;
+    const tipValue = parseFloat(tip); // Convertir la propina a número
+    const totalWithTip =
+      subtotal + shippingCost + (isNaN(tipValue) ? 0 : tipValue); // Verificar si es un número válido
+    return totalWithTip;
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setExpirationDate("");
+    setCVV("");
+    setCardNumber("");
+    setCustomerName("");
+    setTip("");
+    setOpenDialog(false);
+    setFormErrors({}); // Limpiar los errores cuando se cierra el diálogo
+  };
+
+  const handlePaymentMethodChange = (event) => {
+    setPaymentMethod(event.target.value);
+  };
+
+  const handleCustomerNameChange = (event) => {
+    setCustomerName(event.target.value);
+  };
+
+  const handleTipChange = (event) => {
+    const newValue = event.target.value.replace(/[^0-9.]/g, "");
+    if (newValue !== "" && parseFloat(newValue) > 100) {
+      setTip("100");
+    } else {
+      setTip(newValue);
+    }
+  };
+
+  const handleCardNumberChange = (event) => {
+    const newValue = event.target.value.replace(/[^0-9]/g, "").substring(0, 16);
+    setCardNumber(newValue);
+  };
+
+  const formatExpirationDate = (input) => {
+    const formattedInput = input.replace(/\D/g, "").substring(0, 4);
+    if (formattedInput.length >= 2) {
+      return formattedInput.substring(0, 2) + "/" + formattedInput.substring(2);
+    }
+    return formattedInput;
+  };
+
+  const handleExpirationDateChange = (event) => {
+    const inputValue = event.target.value;
+    const formattedValue = formatExpirationDate(inputValue);
+    setExpirationDate(formattedValue);
+  };
+
+  const handleCVVChange = (event) => {
+    const newValue = event.target.value.replace(/[^0-9]/g, "").substring(0, 3);
+    setCVV(newValue);
+  };
+
+  const handleConfirmPayment = () => {
+    const errors = {};
+
+    // Validar campos requeridos en función del método de pago
+    if (!customerName.trim() && paymentMethod === "tarjeta") {
+      errors.customerName = "Nombre del cliente es obligatorio";
+    }
+
+    if (paymentMethod === "tarjeta") {
+      if (!cardNumber) {
+        errors.cardNumber = "Número de tarjeta es obligatorio";
+      } else if (cardNumber.length !== 16) {
+        errors.cardNumber = "Número de tarjeta debe tener 16 dígitos";
+      }
+
+      if (!expirationDate) {
+        errors.expirationDate = "Fecha de expiración es obligatoria";
+      }
+
+      if (!cvv) {
+        errors.cvv = "CVV es obligatorio";
+      }
+    }
+
+    if (Object.keys(errors).length === 0) {
+      // No hay errores, proceder con la confirmación de pago
+      setTimeout(() => {
+        setConfirmationMessage("Compra realizada");
+        setTimeout(() => {
+          handleCloseDialog();
+          setConfirmationMessage("");
+        }, 1000);
+      }, 1000);
+    } else {
+      // Hay errores, mostrar los errores en el formulario
+      setFormErrors(errors);
+    }
+  };
 
   return (
     <div className="flex flex-col">
@@ -93,6 +220,7 @@ const ShoppingCart = () => {
           color="primary"
           label={"CHECKOUT"}
           clickable
+          onClick={handleOpenDialog}
         />
         <Chip
           disabled={!orderItems.length}
@@ -102,6 +230,130 @@ const ShoppingCart = () => {
           clickable
         />
       </div>
+
+      {/* Ventana emergente de confirmación de compra */}
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            Confirmar Compra
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseDialog}
+              sx={{
+                position: "absolute",
+                top: 5,
+                right: 5,
+              }}
+            >
+              <Icon>close</Icon>
+            </IconButton>
+          </div>
+        </DialogTitle>
+        <DialogContent sx={{ padding: "16px" }}>
+          {confirmationMessage ? (
+            <div style={{ textAlign: "center" }}>
+              <Typography variant="h6">{confirmationMessage}</Typography>
+              <img
+                src="../../assets/hamburguesa.png?url"
+                alt="Checkmark"
+                style={{ width: "64px", height: "64px" }}
+              />
+            </div>
+          ) : (
+            <>
+              <FormControl fullWidth sx={{ marginBottom: 2, marginTop: 2 }}>
+                <InputLabel id="payment-method-label" sx={{ width: "100%" }}>
+                  Método de Pago
+                </InputLabel>
+                <Select
+                  labelId="payment-method-label"
+                  id="payment-method"
+                  value={paymentMethod}
+                  onChange={handlePaymentMethodChange}
+                  size="small"
+                >
+                  <MenuItem value="efectivo">Efectivo</MenuItem>
+                  <MenuItem value="tarjeta">Tarjeta</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                fullWidth
+                label="Nombre del Cliente"
+                value={customerName}
+                onChange={handleCustomerNameChange}
+                error={!!formErrors.customerName}
+                helperText={formErrors.customerName}
+                sx={{ marginBottom: 2 , backgroundColor: formErrors.customerName ? "rgba(255, 0, 0, 0)" : "transparent",}}
+                size="small"
+              />
+              {paymentMethod === "tarjeta" && (
+                <>
+                  <TextField
+                    fullWidth
+                    label="Número de Tarjeta"
+                    value={cardNumber}
+                    onChange={handleCardNumberChange}
+                    error={!!formErrors.cardNumber}
+                    helperText={formErrors.cardNumber}
+                    sx={{ marginBottom: 2, width: "100%" ,backgroundColor: formErrors.cardNumber ? "rgba(255, 0, 0, 0)" : "transparent",}}
+                    size="small"
+                  />
+                  <div style={{ display: "flex", justifyContent: "left" }}>
+                    <TextField
+                      label="Fecha de Expedición"
+                      value={expirationDate}
+                      onChange={handleExpirationDateChange}
+                      error={!!formErrors.expirationDate}
+                      helperText={formErrors.expirationDate}
+                      sx={{ width: "30%", marginBottom: 2, backgroundColor: formErrors.expirationDate ? "rgba(255, 0, 0, 0)" : "transparent", }}
+                      size="small"
+                    />
+                    <TextField
+                      label="CVV"
+                      value={cvv}
+                      onChange={handleCVVChange}
+                      error={!!formErrors.cvv}
+                      helperText={formErrors.cvv}
+                      sx={{ width: "30%", marginBottom: 2, marginLeft: "20px" , backgroundColor: formErrors.cvv ? "rgba(255, 0, 0, 0)" : "transparent",}}
+                      size="small"
+                    />
+                  </div>
+                </>
+              )}
+              <TextField
+                fullWidth
+                label="Propina"
+                value={tip}
+                onChange={handleTipChange}
+                error={!!formErrors.tip}
+                sx={{
+                  marginBottom: 1,
+                  width: "20%",
+                  justifyContent: "right",
+                }}
+                size="small"
+              />
+              <Typography variant="body1" sx={{ mt: 2, fontWeight: "bold", textAlign: "right" }}>
+                Total: ${calculateTotal().toFixed(2)} (Envío: $1)
+              </Typography>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          {confirmationMessage ? null : (
+            <Button onClick={handleCloseDialog} color="secondary">
+              Cancelar
+            </Button>
+          )}
+          <Button
+            onClick={handleConfirmPayment}
+            color="primary"
+            disabled={confirmationMessage}
+          >
+            {confirmationMessage ? "Cargando..." : "Confirmar Pago"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
