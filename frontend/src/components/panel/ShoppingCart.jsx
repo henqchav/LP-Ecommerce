@@ -181,16 +181,16 @@ const ShoppingCart = () => {
         quantity: item.quantity,
       }));
       const orderData = {
-        productdata: productData,
+        product_data: productData,
         order_code: orderCode,
         status: "pendiente", // Estado por defecto
       };
+      console.log(orderData)
       try {
-        // Enviar los datos del pedido al servidor
         const response = await createOrder(orderData);
         console.log(orderData)
-        // Verificar la respuesta del servidor y mostrar un mensaje de éxito
-        if (response && response.success) {
+
+        if (response != null) {
           setConfirmationMessage("Compra realizada");
           setTimeout(() => {
             handleCloseDialog();
@@ -277,11 +277,6 @@ const ShoppingCart = () => {
           {confirmationMessage ? (
             <div style={{ textAlign: "center" }}>
               <Typography variant="h6">{confirmationMessage}</Typography>
-              <img
-                src="../../assets/checkmark.gif"
-                alt="Checkmark"
-                style={{ width: "64px", height: "64px" }}
-              />
             </div>
           ) : (
             <>
@@ -372,7 +367,7 @@ const ShoppingCart = () => {
           <Button
             onClick={handleConfirmPayment}
             color="primary"
-            disabled={confirmationMessage}
+            disabled={!!confirmationMessage}
           >
             {confirmationMessage ? "Cargando..." : "Confirmar Pago"}
           </Button>

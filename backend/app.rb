@@ -16,6 +16,13 @@ use Rack::Cors do
   end
 end
 
+use Rack::Cors do
+  allow do
+    origins 'http://localhost:5173' # Reemplaza esto con la URL de tu frontend
+    resource '/orders', headers: :any, methods: [:get, :post, :options]
+  end
+end
+
 # Enable JSON parsing middleware using rack-parser
 require 'rack/parser'
 use Rack::Parser, parsers: {
@@ -162,6 +169,8 @@ get '/orders/by_code/:order_code' do
 end
 
 post '/orders' do
+  puts "Recibida una solicitud POST en /orders"
+  puts "Datos recibidos: #{params.inspect}"
   order = Order.new(params)
   if order.save
     status 201
