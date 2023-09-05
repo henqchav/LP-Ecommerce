@@ -3,8 +3,9 @@ import { useForm, Controller } from 'react-hook-form';
 import { TextField, Button, Grid } from '@mui/material';
 import { useSelector, useDispatch } from "react-redux";
 import { closeSidepanel } from '../../slices/sidepanelSlice';
-import useUpdateProduct from '../../utils/hooks/useUpdateProduct';
-import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { updateProductsInv } from '../../services/productInvService';
+import {incrementDataRevision} from '../../slices/revisionSlice'
+
 
 const EditInventory = () => {
   const selectedProduct = useSelector((state) => state.sidepanel.selectedProduct);
@@ -15,16 +16,14 @@ const EditInventory = () => {
     formState: { errors },
     setValue,
   } = useForm();
-
-  const { updateProduct } = useUpdateProduct();
-
   const isPositiveNumber = (value) => {
     return parseFloat(value) >= 0 || 'No se permiten números negativos';
   };
 
   const onSubmit = (data) => {
-    updateProduct(selectedProduct.id, data);
-    console.log(data);
+    console.log(data)
+    updateProductsInv(selectedProduct.id, data);
+    dispatch(incrementDataRevision({ event: "productsInvRevision" }))
   };
 
   React.useEffect(() => {

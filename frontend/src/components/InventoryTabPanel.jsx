@@ -6,6 +6,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { setSelectedProduct, openSidepanel } from '../slices/sidepanelSlice';
 import useProductsInv from '../utils/hooks/useProductsInv';
 import useDeleteProduct from '../utils/hooks/useDeleteProduct';
+import {incrementDataRevision} from '../slices/revisionSlice'
 
 const productosInv = [
   {
@@ -75,7 +76,7 @@ const productosInv = [
 
 
 const InventoryTabPanel = ({ value, index }) => {
-
+  
   const dispatch = useDispatch();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -83,7 +84,7 @@ const InventoryTabPanel = ({ value, index }) => {
   const { productsInv: productos, loading } = useProductsInv();
   const { deleteProduct } = useDeleteProduct();
   const [open, setOpen] = React.useState(false);
-  const [selectedProduct, setSelectedProduct] = React.useState(null);
+  const [selectedProduct, setSelectedProducts] = React.useState(null);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -95,7 +96,7 @@ const InventoryTabPanel = ({ value, index }) => {
   };
 
   const handleOpen = (product) => {
-    setSelectedProduct(product);
+    setSelectedProducts(product);
     setOpen(true);
   };
 
@@ -106,6 +107,12 @@ const InventoryTabPanel = ({ value, index }) => {
   const handleDelete = async () => {
     await deleteProduct(selectedProduct.id);
     handleClose();
+    dispatch(incrementDataRevision({ event: "productsInvRevision" }))
+  };
+
+  const handleAddProductClick = () => {
+    dispatch(setSelectedProduct({clear : true}));
+    dispatch(openSidepanel({ id: "ADD_INVENTORY" }));
   };
 
   if (loading) {
@@ -115,7 +122,7 @@ const InventoryTabPanel = ({ value, index }) => {
       </div>
     );
   }
-
+  console.log(productos)
   return (
     <div
       ref={animateRef}
@@ -124,6 +131,17 @@ const InventoryTabPanel = ({ value, index }) => {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
     >
+      <h3>
+          Productos con inventario: {productos.length} 
+        </h3>
+      <IconButton 
+      color="primary"
+      className="mr-6"
+      onClick={handleAddProductClick}
+      >
+        <Icon>add</Icon>
+        Añadir Inventario a Producto
+      </IconButton>
       {value === index && (
         <TableContainer component={Paper}>
         <Table>

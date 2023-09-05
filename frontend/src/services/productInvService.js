@@ -15,23 +15,33 @@ export const createProductsInv = (productInvData) =>
     .post("/product_inventory", productInvData)
     .then((response) => response.data);
 
-export const createProducts = (productInvData) =>
-createRequest()
-  .post("/products", productInvData)
-  .then((response) => response.data);
-
 export const deleteProductsInv = (productInvId) =>
   createRequest()
     .delete(`/product_inventory/${productInvId}`)
     .then((response) => response.status === 204);
 
-export const deleteProducts = (productInvId) =>
-createRequest()
-  .delete(`/products/${productInvId}`)
-  .then((response) => response.status === 204);
-
 export const updateProductsInv = (productInvId, productInvData) =>
-createRequest()
-  .put(`/product_inventory/${productInvId}`, productInvData)
-  .then((response) => response.data);
+  createRequest()
+    .put(`/product_inventory/${productInvId}`, productInvData)
+    .then((response) => response.data);
+
+export const getProducts = () =>
+  createRequest()
+    .get("/products")
+    .then((response) => response.data);
+
+export const createProducts = (productInvData) =>
+  createRequest()
+    .post("/products", productInvData)
+    .then((response) => response.data);
+
+export const deleteProducts = (productInvId) =>
+  createRequest()
+    .delete(`/products/${productInvId}`)
+    .then((response) => response.status === 204);
+
+export const updateProducts = (productInvId, productInvData) =>
+  createRequest()
+    .put(`/products/${productInvId}`, productInvData)
+    .then((response) => response.data);
   

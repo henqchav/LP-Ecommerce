@@ -7,6 +7,7 @@ import useUpdateProduct from '../../utils/hooks/useUpdateProduct';
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import useCreateProduct from '../../utils/hooks/useCreateProduct';
 import { createProducts } from '../../services/productInvService';
+import {incrementDataRevision} from '../../slices/revisionSlice'
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const AddProduct = () => {
   const onSubmit = (data) => {
     console.log(data)
     createProducts(data);
+    dispatch(incrementDataRevision({ event: "productsInvRevision" }))
   };
 
   const handlePriceChange = (newValue) => {

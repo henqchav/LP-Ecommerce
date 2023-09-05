@@ -5,9 +5,10 @@ import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper
 import { useDispatch } from "react-redux";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { setSelectedProduct, openSidepanel, closeSidepanel } from '../slices/sidepanelSlice';
-import useProductsInv from '../utils/hooks/useProductsInv';
+import useProducts from '../utils/hooks/useProducts';
 import useDeleteProduct from '../utils/hooks/useDeleteProduct';
 import { deleteProducts } from '../services/productInvService';
+import {incrementDataRevision} from '../slices/revisionSlice'
 
 
 const productosInv = [
@@ -83,13 +84,11 @@ const ProductsTabPanel = ({ value, index }) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [expandedDescriptions, setExpandedDescriptions] = React.useState({});
   const [animateRef] = useAutoAnimate();
-  const { productsInv: productos, loading } = useProductsInv();
+  const { productsInv: productos, loading } = useProducts();
   const { deleteProduct } = useDeleteProduct();
   const [open, setOpen] = React.useState(false);
   const [selectedProduct, setSelectedProducts] = React.useState(null);
   const formRef = useRef(null);
-
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -122,8 +121,10 @@ const ProductsTabPanel = ({ value, index }) => {
   };
 
   const handleDelete = async () => {
-    await deleteProducts(selectedProduct.id);
+    await deleteProducts(selectedProduct._id.$oid);
+    dispatch(incrementDataRevision({ event: "productsInvRevision" }))
     handleClose();
+
   };
 
   if (loading) {
@@ -133,7 +134,7 @@ const ProductsTabPanel = ({ value, index }) => {
       </div>
     );
   }
-
+  console.log(productos)
   return (
     
     <div
@@ -143,6 +144,9 @@ const ProductsTabPanel = ({ value, index }) => {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
     >
+      <h3>
+          Productos: {productos.length} 
+        </h3>
       <IconButton 
       color="primary"
       className="mr-6"
@@ -212,7 +216,7 @@ const ProductsTabPanel = ({ value, index }) => {
                       },
                     }}
                   >
-                    <DialogTitle>¿Estás seguro de que quieres eliminar este producto? {producto.name}</DialogTitle>
+                    <DialogTitle>¿Estás seguro de que quieres eliminar este producto?</DialogTitle>
                     <DialogContent>
                       <DialogContentText>
                         Esta acción no se puede deshacer.
