@@ -143,6 +143,17 @@ get '/orders/:id' do
   end
 end
 
+get '/orders/by_code/:order_code' do
+  order = Order.find_by(order_code: params[:order_code])
+
+  if order
+    content_type :json
+    { order_status: order.status }.to_json
+  else
+    status 404
+  end
+end
+
 post '/orders' do
   order = Order.new(params)
   if order.save

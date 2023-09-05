@@ -5,6 +5,11 @@ export const getOrders = () => {
     .then(response => response.data);
 };
 
+export const getOrderByCode = (orderCode) => {
+  return axios.get(`/orders/by_code/${orderCode}`)
+    .then(response => response.data);
+};
+
 export const createOrder = (orderData) => {
   return axios.post('/orders', orderData)
     .then(response => response.data);
