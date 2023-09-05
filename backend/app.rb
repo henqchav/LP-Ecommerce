@@ -46,6 +46,19 @@ post '/products' do
   end
 end
 
+put '/products/:id' do
+  product = Product.find(params[:id])
+  if product
+    if product.update(params)
+      status 200
+    else
+      status 500
+    end
+  else
+    status 404
+  end
+end
+
 delete '/products/:id' do
   product = Product.find(params[:id])
   if product
@@ -118,7 +131,10 @@ end
 put '/product_inventory/:id' do
   productInv = ProductInv.find(params[:id])
   if productInv
-    if productInv.update(params)
+    new_status = JSON.parse(request.body.read)['quantity']
+    puts new_status
+    productInv.quantity = new_status
+    if productInv.save
       status 200
     else
       status 500
@@ -127,6 +143,8 @@ put '/product_inventory/:id' do
     status 404
   end
 end
+
+
 
 delete '/product_inventory/:id' do
   productInv = ProductInv.find(params[:id])
