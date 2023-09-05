@@ -1,5 +1,5 @@
 import axios_core from "axios";
-const API_URL = "http://localhost:4567";
+const API_URL = "https://crispy-telegram-wjpvppjrj7gfgj6q-4567.app.github.dev/";
 
 
 export const axiosConfig = {

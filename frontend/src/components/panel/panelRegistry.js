@@ -2,13 +2,15 @@ import ShoppingCart from "./ShoppingCart";
 import EditInventory from "./EditInventory";
 import EditProduct from "./EditProduct";
 import CheckOrder from "./CheckOrder";
+import AddProduct from "./AddProduct";
+
 
 export const registry = {
   SHOPPING_CART: ShoppingCart,
   ORDER_STATUS: CheckOrder,
   EDIT_INVENTORY: EditInventory,
   EDIT_PRODUCT: EditProduct,
-  ADD_PRODUCT: EditProduct,
+  ADD_PRODUCT: AddProduct,
 };
 
 export const panelTitles = {

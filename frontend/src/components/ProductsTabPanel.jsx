@@ -1,11 +1,14 @@
 import * as React from 'react';
+import { useRef } from 'react';
 import imgHamburguesa from "../assets/hamburguesa.png?url"
 import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, IconButton,Icon, TablePagination, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useDispatch } from "react-redux";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { setSelectedProduct, openSidepanel } from '../slices/sidepanelSlice';
+import { setSelectedProduct, openSidepanel, closeSidepanel } from '../slices/sidepanelSlice';
 import useProductsInv from '../utils/hooks/useProductsInv';
 import useDeleteProduct from '../utils/hooks/useDeleteProduct';
+import { deleteProducts } from '../services/productInvService';
+
 
 const productosInv = [
   {
@@ -83,7 +86,9 @@ const ProductsTabPanel = ({ value, index }) => {
   const { productsInv: productos, loading } = useProductsInv();
   const { deleteProduct } = useDeleteProduct();
   const [open, setOpen] = React.useState(false);
-  const [selectedProduct, setSelectedProduct] = React.useState(null);
+  const [selectedProduct, setSelectedProducts] = React.useState(null);
+  const formRef = useRef(null);
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -101,17 +106,23 @@ const ProductsTabPanel = ({ value, index }) => {
     }));
   };
 
+  const handleAddProductClick = () => {
+    dispatch(setSelectedProduct({clear : true}));
+    dispatch(openSidepanel({ id: "ADD_PRODUCT" }));
+  };
+
   const handleOpen = (product) => {
-    setSelectedProduct(product);
+    setSelectedProducts(product);
     setOpen(true);
   };
 
   const handleClose = () => {
+    setSelectedProduct(null);
     setOpen(false);
   };
 
   const handleDelete = async () => {
-    await deleteProduct(selectedProduct.id);
+    await deleteProducts(selectedProduct.id);
     handleClose();
   };
 
@@ -135,8 +146,7 @@ const ProductsTabPanel = ({ value, index }) => {
       <IconButton 
       color="primary"
       className="mr-6"
-      onClick={() => {
-        dispatch(openSidepanel({ id: "ADD_PRODUCT" }))}}
+      onClick={handleAddProductClick}
       >
         <Icon>add</Icon>
         Añadir Producto
@@ -183,7 +193,8 @@ const ProductsTabPanel = ({ value, index }) => {
                   className="mr-6"
                   onClick={() => {
                     dispatch(setSelectedProduct(producto));
-                    dispatch(openSidepanel({ id: "EDIT_PRODUCT" }))}}
+                    dispatch(openSidepanel({ id: "EDIT_PRODUCT" }));
+                  }}
                   >
                     <Icon>edit</Icon>
                   </IconButton>
@@ -201,7 +212,7 @@ const ProductsTabPanel = ({ value, index }) => {
                       },
                     }}
                   >
-                    <DialogTitle>¿Estás seguro de que quieres eliminar este producto?</DialogTitle>
+                    <DialogTitle>¿Estás seguro de que quieres eliminar este producto? {producto.name}</DialogTitle>
                     <DialogContent>
                       <DialogContentText>
                         Esta acción no se puede deshacer.
