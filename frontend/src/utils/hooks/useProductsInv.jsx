@@ -14,7 +14,6 @@ const useProductsInv = () => {
     try {
       (async () => {
         const fetchedProductsInv = await getProductsInv();
-        console.log({ fetchedProductsInv });
         setProductsInv(fetchedProductsInv);
         setLoading(false);
       })();
