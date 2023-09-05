@@ -22,6 +22,9 @@ const sidepanelSlice = createSlice({
     },
     setSelectedProduct: (state, action) => {
       state.selectedProduct = action.payload;
+      if (action.payload?.clear) {
+        state.selectedProduct = null;
+      }
     },
   },
 });

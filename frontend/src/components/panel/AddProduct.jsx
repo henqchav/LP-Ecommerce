@@ -6,9 +6,9 @@ import { closeSidepanel } from '../../slices/sidepanelSlice';
 import useUpdateProduct from '../../utils/hooks/useUpdateProduct';
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import useCreateProduct from '../../utils/hooks/useCreateProduct';
+import { createProducts } from '../../services/productInvService';
 
-const EditProduct = () => {
-  const selectedProduct = useSelector((state) => state.sidepanel.selectedProduct);
+const AddProduct = () => {
   const dispatch = useDispatch();
   const {
     control,
@@ -19,6 +19,7 @@ const EditProduct = () => {
   } = useForm();
 
   const { updateProduct } = useUpdateProduct();
+  const { createProduct } = useCreateProduct();
   const [animateRef] = useAutoAnimate();
 
   const isPositiveNumber = (value) => {
@@ -26,7 +27,8 @@ const EditProduct = () => {
   };
 
   const onSubmit = (data) => {
-      updateProduct(selectedProduct.id, data);
+    console.log(data)
+    createProducts(data);
   };
 
   const handlePriceChange = (newValue) => {
@@ -44,14 +46,6 @@ const EditProduct = () => {
     const newPrice = (currentPrice - 0.1).toFixed(1);
     handlePriceChange(newPrice);
   };
-
-  React.useEffect(() => {
-    if (selectedProduct) {
-      setValue('name', selectedProduct.name);
-      setValue('description', selectedProduct.description);
-      setValue('price', selectedProduct.price);
-    }
-  }, [selectedProduct, setValue]);
 
   const handleClosePanel = () => {
     dispatch(closeSidepanel({ clear: true })); 
@@ -152,4 +146,4 @@ const EditProduct = () => {
   );
 };
 
-export default EditProduct;
+export default AddProduct;

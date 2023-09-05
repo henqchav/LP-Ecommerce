@@ -13,7 +13,7 @@ require_relative 'models/productinv'
 use Rack::Cors do
   allow do
     origins '*'
-    resource '*', headers: :any, methods: [:get, :post, :options, :put]
+    resource '*', headers: :any, methods: [:get, :post, :options, :put, :delete]
   end
 end
 
@@ -105,6 +105,8 @@ get '/product_inventory/:id' do
 end
 
 post '/product_inventory' do
+  puts "Recibida una solicitud POST en /product_inventory"
+  puts "Datos recibidos: #{params.inspect}"
   productInv = ProductInv.new(params)
   if productInv.save
     status 201

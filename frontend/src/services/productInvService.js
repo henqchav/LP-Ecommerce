@@ -15,10 +15,20 @@ export const createProductsInv = (productInvData) =>
     .post("/product_inventory", productInvData)
     .then((response) => response.data);
 
+export const createProducts = (productInvData) =>
+createRequest()
+  .post("/products", productInvData)
+  .then((response) => response.data);
+
 export const deleteProductsInv = (productInvId) =>
   createRequest()
     .delete(`/product_inventory/${productInvId}`)
     .then((response) => response.status === 204);
+
+export const deleteProducts = (productInvId) =>
+createRequest()
+  .delete(`/products/${productInvId}`)
+  .then((response) => response.status === 204);
 
 export const updateProductsInv = (productInvId, productInvData) =>
 createRequest()
