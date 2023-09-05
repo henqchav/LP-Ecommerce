@@ -11,7 +11,6 @@ const OrdersTabPanel = ({ value, index }) => {
     _id: '1',
     product_id: '123',
     quantity: 2,
-    nota: 'Sin cebolla',
     total_pedido: '$20',
   };
 
@@ -28,9 +27,8 @@ const OrdersTabPanel = ({ value, index }) => {
             <Table>
               <TableHead>
                 <TableRow style={{ borderBottom: '3px solid #706E6E' }}>
-                  <TableCell>Producto ID</TableCell>
-                  <TableCell>Cantidad</TableCell>
-                  <TableCell>Nota</TableCell>
+                  <TableCell>Orden ID</TableCell>
+                  <TableCell>Productos</TableCell>
                   <TableCell>Total Pedido</TableCell>
                   <TableCell>Acciones</TableCell>
                 </TableRow>
@@ -40,7 +38,6 @@ const OrdersTabPanel = ({ value, index }) => {
                 <TableRow key={dummyOrder._id} >
                   <TableCell>{dummyOrder.product_id}</TableCell>
                   <TableCell>{dummyOrder.quantity}</TableCell>
-                  <TableCell>{dummyOrder.nota}</TableCell>
                   <TableCell>{dummyOrder.total_pedido}</TableCell>
                   <TableCell>
                     <IconButton style={{ color: 'green' }}>
@@ -52,22 +49,7 @@ const OrdersTabPanel = ({ value, index }) => {
                   </TableCell>
                 </TableRow>
                 {/* Renderiza las órdenes reales */}
-                {orders.map(order => (
-                  <TableRow key={order._id}>
-                    <TableCell>{order.product_id}</TableCell>
-                    <TableCell>{order.quantity}</TableCell>
-                    <TableCell>{order.nota}</TableCell>
-                    <TableCell>{order.total_pedido}</TableCell>
-                    <TableCell>
-                    <IconButton style={{ color: 'green' }}>
-                        <Check />
-                      </IconButton>
-                      <IconButton style={{ color: 'red' }}>
-                        <Clear />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                
               </TableBody>
             </Table>
           </TableContainer>
