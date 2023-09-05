@@ -2,6 +2,7 @@
 require 'sinatra'
 require 'rack/cors'
 require 'mongoid'
+require 'json'
 require_relative 'mongoid_loader'
 require_relative 'models/product'
 require_relative 'models/order'
@@ -12,16 +13,10 @@ require_relative 'models/productinv'
 use Rack::Cors do
   allow do
     origins '*'
-    resource '*', headers: :any, methods: [:get, :post, :options]
+    resource '*', headers: :any, methods: [:get, :post, :options, :put]
   end
 end
 
-use Rack::Cors do
-  allow do
-    origins 'http://localhost:5173' # Reemplaza esto con la URL de tu frontend
-    resource '/orders', headers: :any, methods: [:get, :post, :options]
-  end
-end
 
 # Enable JSON parsing middleware using rack-parser
 require 'rack/parser'
@@ -169,8 +164,8 @@ get '/orders/by_code/:order_code' do
 end
 
 post '/orders' do
-  puts "Recibida una solicitud POST en /orders"
-  puts "Datos recibidos: #{params.inspect}"
+    puts "Recibida una solicitud POST en /orders"
+    puts "Datos recibidos: #{params.inspect}"
   order = Order.new(params)
   if order.save
     status 201
@@ -197,7 +192,7 @@ put '/orders/:id' do
   
   if order
     new_status = JSON.parse(request.body.read)['status']
-    
+    puts new_status
     order.status = new_status
     if order.save
       status 200

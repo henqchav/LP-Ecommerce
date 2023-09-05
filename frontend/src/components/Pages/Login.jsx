@@ -1,22 +1,34 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import { Typography, Box, TextField, Button } from '@mui/material';
+import { Button, Box, TextField, IconButton, InputAdornment } from '@mui/material';
+import { Link } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-
-const Login = ({ onLogin }) => {
+const Login = () => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [errors, setErrors] = React.useState({
+    username: false,
+    password: false,
+  });
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleLogin = () => {
-    onLogin(username, password);
+    // Validación: Verifica que ambos campos estén llenos
+    if (username.trim() === '' || password.trim() === '') {
+      // Marcar los campos que faltan de llenar en rojo
+      setErrors({
+        username: username.trim() === '',
+        password: password.trim() === '',
+      });
+    } else {
+      // Lógica de inicio de sesión (redirección, etc.)
+      // En este ejemplo, simplemente mostramos un mensaje de alerta
+      alert('Inicio de sesión exitoso. Redirigiendo a /dashboard...');
+    }
   };
 
   return (
@@ -25,47 +37,60 @@ const Login = ({ onLogin }) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100vh', // Ajusta la altura según tus necesidades
-        position: 'relative', // Agrega posición relativa para alinear el cuadro de fondo
+        height: '100vh',
+        position: 'relative',
       }}
     >
-      {/* Cuadro de fondo blanco */}
       <Box
         sx={{
           position: 'absolute',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 'fit-content', // Ajusta el ancho según el contenido
-          padding: '20px', // Añade espacio interno
-          backgroundColor: '#ffffff', // Color de fondo blanco
-          borderRadius: '8px', // Bordes suaves
-          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)', // Sombra suave
+          width: 'fit-content',
+          padding: '20px',
+          backgroundColor: '#ffffff',
+          borderRadius: '8px',
+          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)',
         }}
       >
-
-        {/* Contenido de inicio de sesión */}
-        <Typography variant="h5" align="center">Iniciar Sesión</Typography>
         <TextField
           label="Usuario"
           variant="outlined"
           fullWidth
           value={username}
-          onChange={handleUsernameChange}
+          onChange={(e) => setUsername(e.target.value)}
           margin="normal"
+          required
+          error={errors.username}
+          helperText={errors.username ? 'Este campo es obligatorio' : ''}
         />
         <TextField
           label="Contraseña"
           variant="outlined"
           fullWidth
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           value={password}
-          onChange={handlePasswordChange}
+          onChange={(e) => setPassword(e.target.value)}
           margin="normal"
+          required
+          error={errors.password}
+          helperText={errors.password ? 'Este campo es obligatorio' : ''}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={handlePasswordVisibility}>
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
-        <Button variant="contained" color="primary" fullWidth onClick={handleLogin}>
-          Iniciar Sesión
-        </Button>
+        <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+          <Button variant="contained" color="primary" fullWidth onClick={handleLogin}>
+            Iniciar Sesión
+          </Button>
+        </Link>
       </Box>
     </Box>
   );

@@ -192,11 +192,12 @@ const ShoppingCart = () => {
         console.log(orderData)
 
         if (response != null) {
-          setConfirmationMessage("Compra realizada");
+          setConfirmationMessage(`Compra realizada: Orden #${orderCode}`);
           setTimeout(() => {
+            dispatch(clearCart());
             handleCloseDialog();
             setConfirmationMessage("");
-          }, 1000);
+          }, 4000);
         } else {
           // Manejar posibles errores del servidor
           console.error("Error en la respuesta del servidor");
