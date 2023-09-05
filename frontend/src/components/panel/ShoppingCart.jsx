@@ -21,6 +21,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart, deleteItemFromCart } from "../../slices/cartSlice";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { createOrder } from "../../services/orderService";
 
 const CartItem = (props) => {
   const id = props.id;
@@ -148,7 +149,7 @@ const ShoppingCart = () => {
     setCVV(newValue);
   };
 
-  const handleConfirmPayment = () => {
+  const handleConfirmPayment = async () => {
     const errors = {};
 
     // Validar campos requeridos en función del método de pago
@@ -174,13 +175,36 @@ const ShoppingCart = () => {
 
     if (Object.keys(errors).length === 0) {
       // No hay errores, proceder con la confirmación de pago
-      setTimeout(() => {
-        setConfirmationMessage("Compra realizada");
-        setTimeout(() => {
-          handleCloseDialog();
-          setConfirmationMessage("");
-        }, 1000);
-      }, 1000);
+      const orderCode = Math.floor(1000 + Math.random() * 9000).toString();
+      const productData = orderItems.map((item) => ({
+        product_name: item.name,
+        quantity: item.quantity,
+      }));
+      const orderData = {
+        productdata: productData,
+        order_code: orderCode,
+        status: "pendiente", // Estado por defecto
+      };
+      try {
+        // Enviar los datos del pedido al servidor
+        const response = await createOrder(orderData);
+        console.log(orderData)
+        // Verificar la respuesta del servidor y mostrar un mensaje de éxito
+        if (response && response.success) {
+          setConfirmationMessage("Compra realizada");
+          setTimeout(() => {
+            handleCloseDialog();
+            setConfirmationMessage("");
+          }, 1000);
+        } else {
+          // Manejar posibles errores del servidor
+          console.error("Error en la respuesta del servidor");
+          
+        }
+      } catch (err) {
+        console.error("Error al enviar la solicitud al servidor:", err);
+        
+      }
     } else {
       // Hay errores, mostrar los errores en el formulario
       setFormErrors(errors);
@@ -254,7 +278,7 @@ const ShoppingCart = () => {
             <div style={{ textAlign: "center" }}>
               <Typography variant="h6">{confirmationMessage}</Typography>
               <img
-                src="../../assets/hamburguesa.png?url"
+                src="../../assets/checkmark.gif"
                 alt="Checkmark"
                 style={{ width: "64px", height: "64px" }}
               />

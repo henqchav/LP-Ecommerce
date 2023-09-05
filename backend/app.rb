@@ -1,6 +1,7 @@
 # app.rb
 require 'sinatra'
 require 'rack/cors'
+require 'mongoid'
 require_relative 'mongoid_loader'
 require_relative 'models/product'
 require_relative 'models/order'
@@ -8,6 +9,7 @@ require_relative 'models/user'
 require_relative 'models/productinv'
 
 # Enable CORS for all routes
+use Rack::Parser, content_type: 'application/json'
 use Rack::Cors do
   allow do
     origins '*'
