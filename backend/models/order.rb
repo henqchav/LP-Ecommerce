@@ -8,3 +8,4 @@ class Order
   # Agrega una validación de inclusión para el campo :status
   validates :status, inclusion: { in: ["completada", "pendiente", "cancelada"] }
 end
+
