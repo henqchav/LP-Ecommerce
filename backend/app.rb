@@ -192,6 +192,23 @@ delete '/orders/:id' do
   end
 end
 
+put '/orders/:id' do
+  order = Order.find(params[:id])
+  
+  if order
+    new_status = JSON.parse(request.body.read)['status']
+    
+    order.status = new_status
+    if order.save
+      status 200
+    else
+      status 500
+    end
+  else
+    status 404
+  end
+end
+
 # Métodos para Usuarios
 get '/users' do
   User.all.to_json
