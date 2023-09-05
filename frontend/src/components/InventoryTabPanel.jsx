@@ -1,9 +1,13 @@
 import * as React from 'react';
 import imgHamburguesa from "../assets/hamburguesa.png?url"
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, IconButton,Icon, TablePagination, Button  } from '@mui/material';
+import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Paper, IconButton, Button,Icon, TablePagination, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle   } from '@mui/material';
 import { useDispatch } from "react-redux";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { setSelectedProduct, openSidepanel } from '../slices/sidepanelSlice';
-const productos = [
+import useProductsInv from '../utils/hooks/useProductsInv';
+import useDeleteProduct from '../utils/hooks/useDeleteProduct';
+
+const productosInv = [
   {
     id: 1,
     name: "Sencilla",
@@ -75,6 +79,11 @@ const InventoryTabPanel = ({ value, index }) => {
   const dispatch = useDispatch();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [animateRef] = useAutoAnimate();
+  const { productsInv: productos, loading } = useProductsInv();
+  const { deleteProduct } = useDeleteProduct();
+  const [open, setOpen] = React.useState(false);
+  const [selectedProduct, setSelectedProduct] = React.useState(null);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -85,8 +94,31 @@ const InventoryTabPanel = ({ value, index }) => {
     setPage(0);
   };
 
+  const handleOpen = (product) => {
+    setSelectedProduct(product);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleDelete = async () => {
+    await deleteProduct(selectedProduct.id);
+    handleClose();
+  };
+
+  if (loading) {
+    return (
+      <div className="w-full flex justify-center py-56">
+        <CircularProgress size="4rem" />
+      </div>
+    );
+  }
+
   return (
     <div
+      ref={animateRef}
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
@@ -122,9 +154,35 @@ const InventoryTabPanel = ({ value, index }) => {
                   >
                     <Icon>edit</Icon>
                   </IconButton>
-                  <IconButton color="secondary">
+                  <IconButton color="secondary" onClick={() => handleOpen(producto)}>
                     <Icon>clear</Icon>
                   </IconButton>
+                  <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    slotProps={{
+                      backdrop: {
+                        style: {
+                          backgroundColor: 'rgba(0, 0, 0, 0.1)'
+                        },
+                      },
+                    }}
+                  >
+                    <DialogTitle>¿Estás seguro de que quieres eliminar este producto?</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Esta acción no se puede deshacer.
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleClose}>
+                        Cancelar
+                      </Button>
+                      <Button onClick={handleDelete} color="secondary">
+                        Eliminar
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
                 </TableCell>
               </TableRow>
             ))}

@@ -8,6 +8,7 @@ export const registry = {
   ORDER_STATUS: CheckOrder,
   EDIT_INVENTORY: EditInventory,
   EDIT_PRODUCT: EditProduct,
+  ADD_PRODUCT: EditProduct,
 };
 
 export const panelTitles = {
@@ -15,6 +16,7 @@ export const panelTitles = {
   ORDER_STATUS: "Revisar Estado de una Orden",
   EDIT_INVENTORY: "Editar Inventario",
   EDIT_PRODUCT: "Editar Producto",
+  ADD_PRODUCT: "Añadir Producto"
 };
 
 export const panelIcons = {

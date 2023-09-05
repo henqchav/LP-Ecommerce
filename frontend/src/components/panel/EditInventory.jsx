@@ -3,6 +3,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { TextField, Button, Grid } from '@mui/material';
 import { useSelector, useDispatch } from "react-redux";
 import { closeSidepanel } from '../../slices/sidepanelSlice';
+import useUpdateProduct from '../../utils/hooks/useUpdateProduct';
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const EditInventory = () => {
   const selectedProduct = useSelector((state) => state.sidepanel.selectedProduct);
@@ -14,11 +16,14 @@ const EditInventory = () => {
     setValue,
   } = useForm();
 
+  const { updateProduct } = useUpdateProduct();
+
   const isPositiveNumber = (value) => {
     return parseFloat(value) >= 0 || 'No se permiten números negativos';
   };
 
   const onSubmit = (data) => {
+    updateProduct(selectedProduct.id, data);
     console.log(data);
   };
 
@@ -35,7 +40,8 @@ const EditInventory = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-    <div>
+    <div 
+    >
       Nombre del Producto: {selectedProduct ? selectedProduct.name : ''}
     </div>
     <Controller

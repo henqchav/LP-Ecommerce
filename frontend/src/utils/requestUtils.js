@@ -1,5 +1,5 @@
 import axios_core from "axios";
-const API_URL = "http://localhost:4567";
+const API_URL = "https://localhost/4567";
 
 
 export const axiosConfig = {

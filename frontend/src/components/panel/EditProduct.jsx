@@ -3,6 +3,9 @@ import { useForm, Controller } from 'react-hook-form';
 import { TextField, Button, Grid, Typography, InputAdornment, Input } from '@mui/material';
 import { useSelector, useDispatch } from "react-redux";
 import { closeSidepanel } from '../../slices/sidepanelSlice';
+import useUpdateProduct from '../../utils/hooks/useUpdateProduct';
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import useCreateProduct from '../../utils/hooks/useCreateProduct';
 
 const EditProduct = () => {
   const selectedProduct = useSelector((state) => state.sidepanel.selectedProduct);
@@ -15,12 +18,20 @@ const EditProduct = () => {
     getValues,
   } = useForm();
 
+  const { updateProduct } = useUpdateProduct();
+  const { createProduct } = useCreateProduct();
+  const [animateRef] = useAutoAnimate();
+
   const isPositiveNumber = (value) => {
     return parseFloat(value) >= 0 || 'No se permiten números negativos';
   };
 
   const onSubmit = (data) => {
-    console.log(data);
+    if (selectedProduct) {
+      updateProduct(selectedProduct.id, data);
+    } else {
+      createProduct(data);
+    }
   };
 
   const handlePriceChange = (newValue) => {

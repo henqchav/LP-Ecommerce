@@ -9,13 +9,18 @@ require_relative 'models/user'
 require_relative 'models/productinv'
 
 # Enable CORS for all routes
-use Rack::Parser, content_type: 'application/json'
 use Rack::Cors do
   allow do
     origins '*'
     resource '*', headers: :any, methods: [:get, :post, :options]
   end
 end
+
+# Enable JSON parsing middleware using rack-parser
+require 'rack/parser'
+use Rack::Parser, parsers: {
+  'application/json' => proc { |data| JSON.parse(data) }
+}
 
 get '/products' do
   Product.all.to_json
