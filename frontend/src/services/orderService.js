@@ -20,13 +20,11 @@ export const deleteOrder = (orderId) => {
     .then(response => response.status === 204);
 };
 
-export const cancelOrder = async (orderId) => {
-  try {
-    const response = await axios.put(`/orders/${orderId}`, {
-      status: 'cancelada', // Actualiza el estado a 'cancelada'
-    });
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+export const changeOrder = async (orderId, status) => {
+  
+  const response = await axios.put(`/orders/${orderId}`, {
+    status: status,
+  });
+  console.log(response.data)
+  return response.data;
 };

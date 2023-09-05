@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { openSidepanel } from "../slices/sidepanelSlice";
 import { useLocation } from "react-router-dom";
 
@@ -48,7 +49,9 @@ const AppNavBar = () => {
             </Badge>
           </IconButton>
         )}
-        <Button color="inherit">Login</Button>
+        <Link to="/login" style={{ color: 'white',textDecoration: 'none' }}>
+             <Button color="inherit">Login</Button>
+         </Link>
       </Toolbar>
     </AppBar>
   );

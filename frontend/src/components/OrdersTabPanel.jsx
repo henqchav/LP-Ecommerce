@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton } from '@mui/material';
 import { Check, Clear } from '@mui/icons-material';
-import { getOrders, cancelOrder } from '../services/orderService'; 
+import { getOrders, changeOrder } from '../services/orderService'; 
 
 
 const OrdersTabPanel = ({ value, index }) => {
@@ -18,13 +18,25 @@ const OrdersTabPanel = ({ value, index }) => {
     }
   };
 
-   const cancelOrderById = async (orderId) => {
+  const cancelOrderById = async (orderId) => {
     try {
-      await cancelOrder(orderId); // Llama a la función cancelOrder para actualizar el estado
-      // Vuelve a cargar las órdenes después de la cancelación
-      loadOrders();
+      const response = await changeOrder(orderId, 'cancelada');
+      console.log(response);
+      loadOrders(); // Reload the table
     } catch (error) {
       console.error('Error al cancelar la orden', error);
+      // Add code here to handle the error and display messages to the user if necessary
+    }
+  };
+
+  const completedOrderById = async (orderId) => {
+    try {
+      const response = await changeOrder(orderId, 'completada');
+      console.log(response);
+      loadOrders(); // Reload the table
+    } catch (error) {
+      console.error('Error al completar la orden', error);
+      // Add code here to handle the error and display messages to the user if necessary
     }
   };
 
@@ -64,7 +76,7 @@ const OrdersTabPanel = ({ value, index }) => {
                       ))}
                     </TableCell>
                     <TableCell>
-                      <IconButton color="success">
+                      <IconButton color="success" onClick={() => completedOrderById(order._id.$oid)}>
                         <Check />
                       </IconButton>
                       <IconButton color="error" onClick={() => cancelOrderById(order._id.$oid)}>
